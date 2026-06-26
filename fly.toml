@@ -1,10 +1,10 @@
-# fly.toml app configuration file generated for localai-gateway on 2026-06-26T19:55:01Z
+# fly.toml app configuration file generated for localai-gateway on 2026-06-26T20:46:53Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
 app = 'localai-gateway'
-primary_region = 'lhr'
+primary_region = 'ams'
 
 [build]
 
@@ -16,7 +16,7 @@ primary_region = 'lhr'
   PYTHONUNBUFFERED = '1'
 
 [http_service]
-  internal_port = 8000
+  internal_port = 8080
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true
