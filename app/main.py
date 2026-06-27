@@ -31,8 +31,8 @@ app = FastAPI(
     title=settings.APP_NAME,
     description="OpenAI-compatible API gateway with API key management, backed by LocalAI",
     version="1.0.0",
-    docs_url=None,
-    redoc_url=None,
+    docs_url="/docs" if settings.DEBUG else None,
+    redoc_url="/redoc" if settings.DEBUG else None,
     openapi_url="/openapi.json",
     lifespan=lifespan,
 )
