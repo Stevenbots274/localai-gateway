@@ -11,6 +11,7 @@ from app.core.config import settings
 from app.core.database import init_db
 from app.core.logging import configure_logging
 from app.routers import auth, openai_proxy, admin
+from prometheus_client import make_asgi_app
 
 logger = configure_logging()
 
@@ -44,6 +45,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Add Prometheus metrics endpoint
+metrics_app = make_asgi_app()
+app.mount("/metrics", metrics_app)
 
 
 @app.exception_handler(Exception)

@@ -1,6 +1,7 @@
 """Authentication and API key management routes."""
 from fastapi import APIRouter, Depends, HTTPException, status, Header, Request
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql import func
 from typing import Optional
 
 from app.core.database import get_db
@@ -43,6 +44,8 @@ async def get_current_api_key(
             id="admin", name="admin", hashed_key="admin", prefix="admin",
             is_active=True, is_admin=True,
             rate_limit_per_minute=100000, rate_limit_burst=10000,
+            total_requests=0, total_tokens=0,
+            created_at=func.now(),
         )
 
     key = await api_key_service.verify_key(db, api_key)
