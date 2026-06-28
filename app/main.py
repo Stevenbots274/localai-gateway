@@ -49,6 +49,12 @@ app.add_middleware(
 # Add Prometheus metrics endpoint
 metrics_app = make_asgi_app()
 app.mount("/metrics", metrics_app)
+# Add a direct route to avoid potential mount-related redirects
+@app.get("/metrics", include_in_schema=False)
+async def metrics(request: Request):
+    from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
+    from fastapi import Response
+    return Response(content=generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
 
 @app.exception_handler(Exception)

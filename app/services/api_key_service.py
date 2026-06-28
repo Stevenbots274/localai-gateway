@@ -23,7 +23,12 @@ class APIKeyService:
             prefix=prefix,
             rate_limit_per_minute=data.rate_limit_per_minute or 60,
             rate_limit_burst=data.rate_limit_burst or 10,
+            is_active=True,
             is_admin=data.is_admin or False,
+            total_requests=0,
+            total_tokens=0,
+            total_input_tokens=0,
+            total_output_tokens=0,
             description=data.description,
             expires_at=data.expires_at,
             ip_whitelist=data.ip_whitelist,
@@ -42,18 +47,24 @@ class APIKeyService:
 
     @staticmethod
     async def verify_key(db: AsyncSession, plain_key: str) -> Optional[APIKey]:
+        import logging
+        logger = logging.getLogger("app.auth")
+        
         hashed = hash_api_key(plain_key)
         key = await APIKeyService.get_key_by_hash(db, hashed)
 
         if not key:
+            logger.warning(f"Key verification failed: Hash {hashed[:10]}... not found")
             return None
         if not key.is_active:
+            logger.warning(f"Key verification failed: Key {key.id} is inactive")
             return None
         if key.expires_at:
             expires_at = key.expires_at
             if expires_at.tzinfo is None:
                 expires_at = expires_at.replace(tzinfo=timezone.utc)
             if expires_at < datetime.now(timezone.utc):
+                logger.warning(f"Key verification failed: Key {key.id} expired at {expires_at}")
                 return None
 
         return key
