@@ -23,6 +23,8 @@ class APIKeyResponse(BaseModel):
     rate_limit_burst: int
     is_active: bool
     is_admin: bool
+    total_requests: Optional[int] = 0
+    total_tokens: Optional[int] = 0
     description: Optional[str]
     created_at: datetime
     expires_at: Optional[datetime]
@@ -37,8 +39,8 @@ class APIKeyPublic(BaseModel):
     prefix: str
     rate_limit_per_minute: int
     rate_limit_burst: int
-    total_requests: int
-    total_tokens: int
+    total_requests: Optional[int] = 0
+    total_tokens: Optional[int] = 0
     is_active: bool
     is_admin: bool
     description: Optional[str]
